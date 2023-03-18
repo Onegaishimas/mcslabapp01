@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mcslabapp01-ns
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mcslabapp01-ingress
+  namespace: mcslabapp01-ns
+spec:
+  rules:
+  - host: mcslabapp01.mcslab.io 
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: mcslabapp01-svc
+            port: 
+              number: 80
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcslabapp01
+  namespace: mcslabapp01-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mcslabapp01
+  template:
+    metadata:
+      labels:
+        app: mcslabapp01
+    spec:
+      containers:
+      - name: mcslabapp01
+        image: onegaionegai/mcslabapp01:latest
+        ports:
+        - containerPort: 80
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcslabapp01-svc
+  namespace: mcslabapp01-ns
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: mcslabapp01
