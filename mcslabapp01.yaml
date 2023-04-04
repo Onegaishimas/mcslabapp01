@@ -34,12 +34,14 @@ metadata:
   name: mcslabapp01-svc
   namespace: mcslabapp01-ns
 spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
   selector:
     app: mcslabapp01
-  ports:
-    - name: http
-      port: 80
-      targetPort: http
 
 ---
 
